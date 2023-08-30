@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('locale', ['lang' => 'en'])">
                         {{ __('EN') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('users.index')">
+                        {{ __('Users') }}
+                    </x-nav-link>
                 </div>
             </div>
 
