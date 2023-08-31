@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -87,7 +88,10 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
+        DB::transaction(function () use ($user) { 
+            $user->tasks()->delete();
+            $user->delete(); 
+        }, config('database.connections.mysql.max_attempts'));
 
         return redirect('/users');
     }
