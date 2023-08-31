@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -14,7 +18,7 @@ class UserController extends Controller
     {
         return view(
             'users.index', [
-            'users' => User::all(),
+            'users' => User::with('tasks')->get(),
             ]
         );
     }
@@ -24,15 +28,29 @@ class UserController extends Controller
      */
     public function create()
     {
-        
+        return view('users.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $user = new User();
+
+        $user->first_name = $validated['first_name'];
+        $user->last_name = $validated['last_name'];
+        $user->email = $validated['email'];
+        $user->username = $validated['username'];
+        $user->password = Hash::make($validated['password']);
+        $user->is_admin = false;
+        $user->is_active = true;
+
+        $user->save();
+
+        return redirect('/users');
     }
 
     /**
@@ -54,12 +72,14 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user->username = $request->name;
+        $validated = $request->validated();
+
+        $user->username = $validated['name'];
         $user->save();
 
-        return back();
+        return redirect('/users');
     }
 
     /**
@@ -68,5 +88,7 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
+
+        return redirect('/users');
     }
 }
