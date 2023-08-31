@@ -33,6 +33,7 @@
                     <tr>
                         <th class="text-gray-900 dark:text-white" scope="col">#</th>
                         <th class="text-gray-900 dark:text-white" scope="col">{{ __('Task') }}</th>
+                        <th class="text-gray-900 dark:text-white" scope="col">{{ __('Created at') }}</th>
                         <th class="text-gray-900 dark:text-white" scope="col">{{ __('Action') }}</th>
                     </tr>
                 </thead>
@@ -41,6 +42,7 @@
                     <tr>
                         <th class="text-gray-900 dark:text-white text-center" scope="row">{{ $index }}</th>
                         <td class="text-gray-900 dark:text-white text-center">{{ $task->name }}</td>
+                        <td class="text-gray-900 dark:text-white text-center">{{ formatDateDMY($task->created_at) }}</td>
                         <td class="text-gray-900 dark:text-white text-center">
                             <a href="{{ route('tasks.edit', ['task' => $task->id]) }}">
                                 <x-primary-button class="mt-4">
